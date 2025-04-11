@@ -61,19 +61,17 @@ These instructions guide you through setting up and running the Quora clone appl
      * Build the Docker image for the `web` service using the `Dockerfile` if it doesn't exist or has changed.
      * Pull the PostgreSQL image for the `db` service.
      * Create and start the containers for both services in detached mode (`-d`).
-3. **Load Initial Data:**
+3.  **Load Initial Data:**
 
-   * Wait for the containers to be up and running (especially the database).
-   * Execute the management command inside the running `web` container to load the questions and answers from your `qna.json` file.
+    *   Wait for the containers to be up and running (especially the database).
+    *   Execute the management command inside the running `web` container to load the questions and answers from your `qna.json` file.
 
-   ```bash
+    ```bash
+    docker exec -it quora-clone-web-1 python manage.py load_qna qna.json
+    ```
 
-   docker exec -it quora-web-1 python manage.py load_qna qna.json
-
-   ```
-
-   * *(Note: The container name `quora-web-1` might differ slightly on your system. Use `docker ps` to find the correct name of the running web container if needed.)*
-   * This command uses the `dummy_loader` user to populate the database.
+    *   *(Note: The container name `quora-clone-web-1` might differ slightly on your system. Use `docker ps` to find the correct name of the running web container if needed.)*
+    *   This command uses the `dummy_loader` user to populate the database.
 4. **Run Tests (Optional):**
 
    * To ensure everything is set up correctly and the application logic works as expected, you can run the automated tests inside the container:
