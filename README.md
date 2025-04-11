@@ -72,17 +72,15 @@ These instructions guide you through setting up and running the Quora clone appl
 
     *   *(Note: The container name `quora-clone-web-1` might differ slightly on your system. Use `docker ps` to find the correct name of the running web container if needed.)*
     *   This command uses the `dummy_loader` user to populate the database.
-4. **Run Tests (Optional):**
+4.  **Run Tests (Optional):**
 
-   * To ensure everything is set up correctly and the application logic works as expected, you can run the automated tests inside the container:
+    *   To ensure everything is set up correctly and the application logic works as expected, you can run the automated tests inside the container:
 
-   ```bash
+    ```bash
+    docker exec -it quora-clone-web-1 python manage.py test
+    ```
 
-   docker exec -it quora-web-1 python manage.py test
-
-   ```
-
-   * This command will execute the test suite defined in the `test/` directory.
+    *   This command will execute the test suite defined in the `test/` directory.
 5. **Access the Application:**
 
    * Open your web browser and navigate to:
