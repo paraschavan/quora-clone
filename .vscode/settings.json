@@ -1,0 +1,12 @@
+{
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "files.autoSave": "afterDelay",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.envFile": ".env.local",
+    "python.debugging.debugStdLib": true,
+    "python.debugging.justMyCode": false,
+    "debug.javascript.debugByLinkOptions": "always",
+    "debug.allowBreakpointsEverywhere": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.autoImportCompletions": true,
+}

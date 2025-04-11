@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quora Clone - Questions and Answers{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-xl sm:text-2xl font-bold mb-4">{% if search_query %}Search results for "{{ search_query }}"{% else %}Top Questions{% endif %}</h1>
+    
+    {% if questions %}
+        <div class="space-y-4">
+            {% for question in questions %}
+            <div class="theme-card rounded-lg shadow p-4 sm:p-6 hover:shadow-md transition duration-200">
+                <h2 class="text-lg sm:text-xl font-semibold mb-2">
+                    <a href="{% url 'question_detail' question.pk %}" class="hover:text-red-500">{{ question.title }}</a>
+                </h2>
+                <div class="text-gray-600 mb-4 line-clamp-2">{{ question.content|truncatewords:30 }}</div>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 mb-2 sm:mb-0">
+                        <span>Asked by {{ question.author.username }}</span>
+                        <span class="hidden sm:inline mx-2">•</span>
+                        <span>{{ question.created_at|date:"F j, Y" }}</span>
+                        <span class="hidden sm:inline mx-2">•</span>
+                        <span>{{ question.answers.count }} answer{{ question.answers.count|pluralize }}</span>
+                    </div>
+                    <a 
+                        href="{% url 'question_detail' question.pk %}" 
+                        class="text-sm text-red-500 hover:text-red-700 focus:outline-none font-semibold"
+                    >
+                        View answers
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-6 flex justify-center">
+            <nav class="flex flex-wrap items-center justify-center">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="m-1 px-3 py-2 theme-card rounded border border-gray-300 hover:bg-gray-50">
+                    Previous
+                </a>
+                {% endif %}
+
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                    <span class="m-1 px-3 py-2 bg-red-500 rounded text-white">{{ i }}</span>
+                    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                    <a href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}" class="m-1 px-3 py-2 theme-card rounded border border-gray-300 hover:bg-gray-50">
+                        {{ i }}
+                    </a>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="m-1 px-3 py-2 theme-card rounded border border-gray-300 hover:bg-gray-50">
+                    Next
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="theme-card rounded-lg shadow p-6 text-center">
+            {% if search_query %}
+            <p class="text-gray-600 mb-4">No questions found matching "{{ search_query }}".</p>
+            <a href="{% url 'question_list' %}" class="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+                Back to all questions
+            </a>
+            {% else %}
+            <p class="text-gray-600 mb-4">No questions found.</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'ask_question' %}" class="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+                Ask the first question
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" class="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+                Log in to ask a question
+            </a>
+            {% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

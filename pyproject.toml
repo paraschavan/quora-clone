@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quora-clone"
+version = "0.1.0"
+description = "Quora Clone"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Paras Chavan", email = "paraschavan014@gmail.com" }]
+
+dependencies = [
+    "Django==5.2",
+    "whitenoise==6.6.0",
+    "psycopg2-binary==2.9.10",
+    "python-dotenv==1.1.0",
+    "daphne==4.1.2",
+]
+
+[project.optional-dependencies]
+playground = ["ipykernel==6.29.5"]
+
+all = ["quora-clone[playground]"]
+
+[tool.hatch.build]
+include = ["core"]

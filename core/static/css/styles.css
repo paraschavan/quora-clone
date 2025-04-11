@@ -1,0 +1,41 @@
+/* Custom styles for Quora Clone */
+.custom-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.question-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.question-card:hover {
+    transform: translateY(-3px);
+}
+
+.like-button {
+    transition: color 0.2s ease-in-out;
+}
+
+.like-button:hover {
+    color: #EF4444;
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 640px) {
+    .nav-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .nav-links {
+        margin-top: 1rem;
+        flex-direction: column;
+    }
+    
+    .nav-links a {
+        margin: 0.5rem 0;
+        width: 100%;
+        text-align: center;
+    }
+} 

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ question.title }} - Quora Clone{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6 mb-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ question.title }}</h1>
+    <div class="text-gray-600 mb-4">{{ question.content|linebreaks }}</div>
+    <div class="flex items-center text-sm text-gray-500">
+        <span>Asked by {{ question.author.username }}</span>
+        <span class="mx-2">•</span>
+        <span>{{ question.created_at|date:"F j, Y" }}</span>
+    </div>
+</div>
+
+<div class="mb-8">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ question.answers.count }} Answer{{ question.answers.count|pluralize }}</h2>
+    
+    {% if question.answers.all %}
+        <div class="space-y-6">
+            {% for answer in question.answers.all %}
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-6 answer-header cursor-pointer flex justify-between items-center" data-target="answer-content-{{ answer.id }}">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <span>Answered by {{ answer.author.username }}</span>
+                        <span class="mx-2">•</span>
+                        <span>{{ answer.created_at|date:"F j, Y" }}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-gray-500 mr-2">{{ answer.likes.count }} like{{ answer.likes.count|pluralize }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+                <div id="answer-content-{{ answer.id }}" class="answer-content bg-gray-50 p-6 hidden">
+                    <div class="text-gray-600 mb-4">{{ answer.content|linebreaks }}</div>
+                    <div class="flex justify-end">
+                        {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'like_answer' answer.id %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-sm {% if user in answer.likes.all %}text-red-500{% else %}text-gray-500 hover:text-red-500{% endif %} focus:outline-none">
+                                {% if user in answer.likes.all %}
+                                Unlike
+                                {% else %}
+                                Like
+                                {% endif %}
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+            <p class="text-gray-600">No answers yet. Be the first to answer!</p>
+        </div>
+    {% endif %}
+</div>
+
+{% if user.is_authenticated %}
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Your Answer</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <textarea name="content" id="id_content" rows="5" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" required></textarea>
+        </div>
+        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+            Post Your Answer
+        </button>
+    </form>
+</div>
+{% else %}
+<div class="bg-white rounded-lg shadow p-6 text-center">
+    <p class="text-gray-600 mb-4">You must be logged in to answer questions.</p>
+    <a href="{% url 'login' %}?next={{ request.path }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+        Log in to answer
+    </a>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const answerHeaders = document.querySelectorAll('.answer-header');
+        
+        // Show the first answer by default
+        if (answerHeaders.length > 0) {
+            const firstAnswerTarget = answerHeaders[0].getAttribute('data-target');
+            const firstAnswerContent = document.getElementById(firstAnswerTarget);
+            if (firstAnswerContent) {
+                firstAnswerContent.classList.remove('hidden');
+                const arrow = answerHeaders[0].querySelector('svg');
+                if (arrow) {
+                    arrow.classList.add('rotate-180');
+                }
+            }
+        }
+        
+        answerHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const content = document.getElementById(targetId);
+                const arrow = this.querySelector('svg');
+                
+                // Toggle content visibility
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    arrow.classList.add('rotate-180');
+                } else {
+                    content.classList.add('hidden');
+                    arrow.classList.remove('rotate-180');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 
